@@ -19,6 +19,10 @@ body{font-family:'Microsoft YaHei',sans-serif;background:#f0f4f8;color:#333}
 .mkt-btn:hover{opacity:.85}
 .toolbar{display:flex;flex-wrap:wrap;gap:10px;padding:10px 25px;background:#fff;align-items:center;border-bottom:1px solid #eee}
 .toolbar select,.toolbar input,.toolbar button{padding:5px 10px;border:1px solid #ccc;border-radius:5px;font-size:12px}
+#fruitCatBar{display:none;gap:6px;flex-wrap:wrap;align-items:center}
+.fruit-cat-btn{padding:4px 12px;border:1px solid #f0d6b0;background:#fff;border-radius:20px;cursor:pointer;font-size:11px;color:#666;transition:all .2s;white-space:nowrap}
+.fruit-cat-btn:hover{border-color:#e67e22;color:#e67e22}
+.fruit-cat-btn.active-fruit{background:#e67e22;color:#fff;border-color:#e67e22}
 .toolbar button{background:#2e86c1;color:#fff;border:none;cursor:pointer}
 .toolbar button:hover{background:#1a5276}
 .summary{display:flex;gap:10px;padding:10px 25px;background:#fff;font-size:13px;flex-wrap:wrap;border-bottom:1px solid #eee}
@@ -31,7 +35,7 @@ table{width:100%;border-collapse:collapse}
 th{background:#2e86c1;color:#fff;padding:8px 6px;font-size:11px;text-align:left;position:sticky;top:0}
 td{padding:6px;font-size:11px;border-bottom:1px solid #eee}
 tr:hover{background:#f0f8ff}
-.up{color:#c0392b;font-weight:bold}.down{color:#27ae60;font-weight:bold}.flat{color:#888}
+.up{color:#c0392b;font-weight:bold}.down{color:#27ae60;font-weight:bold}.flat{color:#888}.fruit-cat-sep td{border-bottom:2px solid #f0d6b0!important}.fruit-parent td{background:#fafafa}.fruit-child td{border-bottom:1px dotted #f0f0f0}
 .stag{display:inline-block;padding:1px 5px;border-radius:3px;font-size:10px;margin-left:3px}
 .s-春{background:#DAEEF3;color:#1a5276}.s-夏{background:#FDE9D9;color:#c0392b}
 .s-秋{background:#E2EFDA;color:#27ae60}.s-冬{background:#F2DCDB;color:#8e44ad}.s-全年{background:#E4DFEC;color:#2c3e50}
@@ -91,6 +95,7 @@ footer{text-align:center;padding:12px;font-size:10px;color:#aaa}
   <button class="cat-tab" onclick="switchCat('pork')">猪肉</button>
   <button class="cat-tab" onclick="switchCat('poultry')">禽蛋</button>
   <button class="cat-tab" onclick="switchCat('seafood')">水产</button>
+  <button class="cat-tab" onclick="switchCat('fruit')">水果</button>
 </div>
 
 <div class="market-bar" id="marketBar">
@@ -113,6 +118,7 @@ footer{text-align:center;padding:12px;font-size:10px;color:#aaa}
   <select id="catFilter" onchange="renderTable()">
     <option value="全部">全部品类</option>
   </select>
+  <div id="fruitCatBar"></div>
   <input type="text" id="searchInput" placeholder="搜索..." oninput="renderTable()" style="width:140px">
   <button onclick="location.reload()">刷新</button>
   <button onclick="exportCSV()" style="background:#27ae60">导出CSV</button>
@@ -241,6 +247,204 @@ var POULTRY_DATA = {"date": "2026-08-07", "source": "南京日报+农业农村�
 var SEAFOOD_DATA = {"date": "2026-08-07", "source": "南京众彩+南京日报(分析预测)", "totalItems": 17, "activeItems": 17, "comingItems": 0, "avgPrice": 14.53, "upCount": 9, "downCount": 6, "flatCount": 2, "currentSeason": "夏", "currentMonth": 7, "items": [{"name": "鲫鱼", "category": "淡水鱼", "price": 9.34, "yesterdayPrice": 9.38, "change": -0.04, "pctChange": -0.4, "season": "夏", "supplyStatus": "in_season"}, {"name": "草鱼", "category": "淡水鱼", "price": 7.03, "yesterdayPrice": 7.04, "change": -0.01, "pctChange": -0.1, "season": "夏", "supplyStatus": "in_season"}, {"name": "花鲢", "category": "淡水鱼", "price": 8.36, "yesterdayPrice": 8.36, "change": 0.0, "pctChange": 0.0, "season": "夏", "supplyStatus": "in_season"}, {"name": "鳊鱼", "category": "淡水鱼", "price": 9.58, "yesterdayPrice": 9.58, "change": 0.0, "pctChange": 0.0, "season": "夏", "supplyStatus": "in_season"}, {"name": "乌鱼", "category": "淡水鱼", "price": 9.07, "yesterdayPrice": 8.99, "change": 0.08, "pctChange": 0.9, "season": "夏", "supplyStatus": "in_season"}, {"name": "白鲢", "category": "淡水鱼", "price": 3.77, "yesterdayPrice": 3.82, "change": -0.05, "pctChange": -1.3, "season": "夏", "supplyStatus": "in_season"}, {"name": "鲈鱼", "category": "淡水鱼", "price": 14.03, "yesterdayPrice": 13.92, "change": 0.11, "pctChange": 0.8, "season": "夏", "supplyStatus": "in_season"}, {"name": "鳜鱼", "category": "淡水鱼", "price": 30.15, "yesterdayPrice": 30.0, "change": 0.15, "pctChange": 0.5, "season": "夏", "supplyStatus": "in_season"}, {"name": "罗氏虾", "category": "虾类", "price": 28.27, "yesterdayPrice": 27.96, "change": 0.31, "pctChange": 1.1, "season": "夏", "supplyStatus": "in_season"}, {"name": "小龙虾(小青)", "category": "虾类", "price": 6.0, "yesterdayPrice": 6.01, "change": -0.01, "pctChange": -0.2, "season": "夏", "supplyStatus": "in_season"}, {"name": "小龙虾(中青)", "category": "虾类", "price": 9.91, "yesterdayPrice": 10.08, "change": -0.17, "pctChange": -1.7, "season": "夏", "supplyStatus": "in_season"}, {"name": "小龙虾(大青)", "category": "虾类", "price": 18.16, "yesterdayPrice": 17.86, "change": 0.3, "pctChange": 1.7, "season": "夏", "supplyStatus": "in_season"}, {"name": "基围虾", "category": "虾类", "price": 18.1, "yesterdayPrice": 18.12, "change": -0.02, "pctChange": -0.1, "season": "夏", "supplyStatus": "in_season"}, {"name": "对虾", "category": "虾类", "price": 20.06, "yesterdayPrice": 19.91, "change": 0.15, "pctChange": 0.8, "season": "夏", "supplyStatus": "in_season"}, {"name": "牛蛙", "category": "其他", "price": 7.06, "yesterdayPrice": 6.94, "change": 0.12, "pctChange": 1.7, "season": "夏", "supplyStatus": "in_season"}, {"name": "黄鳝", "category": "其他", "price": 27.94, "yesterdayPrice": 27.83, "change": 0.11, "pctChange": 0.4, "season": "夏", "supplyStatus": "in_season"}, {"name": "养殖甲鱼", "category": "其他", "price": 20.11, "yesterdayPrice": 19.9, "change": 0.21, "pctChange": 1.1, "season": "夏", "supplyStatus": "in_season"}]};
 
 // ============ STATE ============
+var ALL_FRUIT_DATA = [
+{"code":"AF01001","name":"苹果","category":"仁果类","avgPrice":3.66,"markets":8,"provinceCount":8},
+{"code":"AF01001001","name":"富士苹果","category":"仁果类","avgPrice":5.19,"markets":7,"provinceCount":7},
+{"code":"AF01001002","name":"红香蕉苹果","category":"仁果类","avgPrice":3.8,"markets":1,"provinceCount":1},
+{"code":"AF01001003","name":"黄元帅苹果","category":"仁果类","avgPrice":4.04,"markets":3,"provinceCount":3},
+{"code":"AF01001004","name":"蛇果","category":"仁果类","avgPrice":5.8,"markets":7,"provinceCount":7},
+{"code":"AF01001005","name":"红星苹果","category":"仁果类","avgPrice":0,"markets":0,"provinceCount":0},
+{"code":"AF01001006","name":"秦冠苹果","category":"仁果类","avgPrice":3.0,"markets":1,"provinceCount":1},
+{"code":"AF01001007","name":"国光苹果","category":"仁果类","avgPrice":3.46,"markets":2,"provinceCount":2},
+{"code":"AF01001008","name":"嘎拉苹果","category":"仁果类","avgPrice":3.15,"markets":1,"provinceCount":1},
+{"code":"AF01001009","name":"乔纳金苹果","category":"仁果类","avgPrice":3.5,"markets":1,"provinceCount":1},
+{"code":"AF01001010","name":"青苹果","category":"仁果类","avgPrice":2.5,"markets":1,"provinceCount":1},
+{"code":"AF01001011","name":"黄香蕉苹果","category":"仁果类","avgPrice":3.49,"markets":2,"provinceCount":2},
+{"code":"AF01002","name":"梨","category":"仁果类","avgPrice":2.35,"markets":7,"provinceCount":7},
+{"code":"AF01002001","name":"鸭梨","category":"仁果类","avgPrice":3.0,"markets":10,"provinceCount":10},
+{"code":"AF01002002","name":"雪梨","category":"仁果类","avgPrice":3.01,"markets":4,"provinceCount":4},
+{"code":"AF01002003","name":"酥梨","category":"仁果类","avgPrice":2.22,"markets":6,"provinceCount":6},
+{"code":"AF01002004","name":"苹果梨","category":"仁果类","avgPrice":2.88,"markets":1,"provinceCount":1},
+{"code":"AF01002005","name":"花盖梨","category":"仁果类","avgPrice":2.1,"markets":1,"provinceCount":1},
+{"code":"AF01002006","name":"红肖梨","category":"仁果类","avgPrice":0,"markets":0,"provinceCount":0},
+{"code":"AF01002007","name":"香梨","category":"仁果类","avgPrice":3.57,"markets":8,"provinceCount":8},
+{"code":"AF01002008","name":"香水梨","category":"仁果类","avgPrice":3.6,"markets":1,"provinceCount":1},
+{"code":"AF01002009","name":"丰水梨","category":"仁果类","avgPrice":3.14,"markets":3,"provinceCount":3},
+{"code":"AF01002010","name":"白梨","category":"仁果类","avgPrice":3.67,"markets":3,"provinceCount":3},
+{"code":"AF01002011","name":"富士梨","category":"仁果类","avgPrice":0,"markets":0,"provinceCount":0},
+{"code":"AF01002012","name":"沙梨","category":"仁果类","avgPrice":0,"markets":0,"provinceCount":0},
+{"code":"AF01003","name":"柿子","category":"仁果类","avgPrice":2.55,"markets":4,"provinceCount":4},
+{"code":"AF01004","name":"山楂","category":"仁果类","avgPrice":3.73,"markets":8,"provinceCount":8},
+{"code":"AF01005","name":"沙果","category":"仁果类","avgPrice":0,"markets":0,"provinceCount":0},
+{"code":"AF01006","name":"海棠果","category":"仁果类","avgPrice":0,"markets":0,"provinceCount":0},
+{"code":"AF01007","name":"鳄梨","category":"仁果类","avgPrice":0,"markets":0,"provinceCount":0},
+{"code":"AF01008","name":"榅桲","category":"仁果类","avgPrice":0,"markets":0,"provinceCount":0},
+{"code":"AF02001","name":"葡萄","category":"浆果类","avgPrice":5.29,"markets":8,"provinceCount":8},
+{"code":"AF02001001","name":"巨峰葡萄","category":"浆果类","avgPrice":6.72,"markets":9,"provinceCount":9},
+{"code":"AF02001002","name":"龙眼葡萄","category":"浆果类","avgPrice":5.56,"markets":1,"provinceCount":1},
+{"code":"AF02001003","name":"青提子","category":"浆果类","avgPrice":4.54,"markets":6,"provinceCount":6},
+{"code":"AF02001004","name":"红提子","category":"浆果类","avgPrice":6.91,"markets":8,"provinceCount":8},
+{"code":"AF02001005","name":"马奶葡萄","category":"浆果类","avgPrice":3.5,"markets":1,"provinceCount":1},
+{"code":"AF02001006","name":"玫瑰香葡萄","category":"浆果类","avgPrice":6.6,"markets":2,"provinceCount":2},
+{"code":"AF02001007","name":"葡萄干(特级)","category":"浆果类","avgPrice":12.05,"markets":1,"provinceCount":1},
+{"code":"AF02001008","name":"葡萄干(一级)","category":"浆果类","avgPrice":10.47,"markets":1,"provinceCount":1},
+{"code":"AF02001009","name":"葡萄干(二级)","category":"浆果类","avgPrice":19.0,"markets":1,"provinceCount":1},
+{"code":"AF02001010","name":"葡萄干(通货)","category":"浆果类","avgPrice":10.59,"markets":3,"provinceCount":3},
+{"code":"AF02001011","name":"全提子葡萄干","category":"浆果类","avgPrice":0,"markets":0,"provinceCount":0},
+{"code":"AF02001012","name":"红马奶葡萄干","category":"浆果类","avgPrice":30.0,"markets":1,"provinceCount":1},
+{"code":"AF02001013","name":"绿马奶葡萄干","category":"浆果类","avgPrice":25.0,"markets":1,"provinceCount":1},
+{"code":"AF02002","name":"草莓","category":"浆果类","avgPrice":6.33,"markets":3,"provinceCount":3},
+{"code":"AF02003","name":"石榴","category":"浆果类","avgPrice":5.3,"markets":3,"provinceCount":3},
+{"code":"AF02003001","name":"石榴(甜石榴)","category":"浆果类","avgPrice":7.5,"markets":1,"provinceCount":1},
+{"code":"AF02003002","name":"石榴(酸石榴)","category":"浆果类","avgPrice":7.75,"markets":1,"provinceCount":1},
+{"code":"AF02003003","name":"石榴(大籽石榴)","category":"浆果类","avgPrice":0,"markets":0,"provinceCount":0},
+{"code":"AF02004","name":"沙棘果","category":"浆果类","avgPrice":0,"markets":0,"provinceCount":0},
+{"code":"AF02005","name":"猕猴桃","category":"浆果类","avgPrice":4.92,"markets":8,"provinceCount":8},
+{"code":"AF02006","name":"黑莓","category":"浆果类","avgPrice":0,"markets":0,"provinceCount":0},
+{"code":"AF02007","name":"橡子","category":"浆果类","avgPrice":0,"markets":0,"provinceCount":0},
+{"code":"AF02008","name":"无花果","category":"浆果类","avgPrice":0,"markets":0,"provinceCount":0},
+{"code":"AF02009","name":"醋栗","category":"浆果类","avgPrice":0,"markets":0,"provinceCount":0},
+{"code":"AF02010","name":"越桔","category":"浆果类","avgPrice":0,"markets":0,"provinceCount":0},
+{"code":"AF02011","name":"树莓","category":"浆果类","avgPrice":0,"markets":0,"provinceCount":0},
+{"code":"AF03001","name":"桃子","category":"核果类","avgPrice":2.66,"markets":7,"provinceCount":7},
+{"code":"AF03001001","name":"白桃","category":"核果类","avgPrice":0,"markets":0,"provinceCount":0},
+{"code":"AF03001002","name":"黄桃","category":"核果类","avgPrice":2.75,"markets":2,"provinceCount":2},
+{"code":"AF03001003","name":"蟠桃","category":"核果类","avgPrice":3.5,"markets":3,"provinceCount":3},
+{"code":"AF03001004","name":"油桃","category":"核果类","avgPrice":2.64,"markets":7,"provinceCount":7},
+{"code":"AF03002","name":"李子","category":"核果类","avgPrice":1.75,"markets":2,"provinceCount":2},
+{"code":"AF03002001","name":"布朗","category":"核果类","avgPrice":6.0,"markets":1,"provinceCount":1},
+{"code":"AF03003","name":"杏子","category":"核果类","avgPrice":2.61,"markets":4,"provinceCount":4},
+{"code":"AF03004","name":"梅子","category":"核果类","avgPrice":0,"markets":0,"provinceCount":0},
+{"code":"AF03005","name":"樱桃","category":"核果类","avgPrice":20.5,"markets":5,"provinceCount":5},
+{"code":"AF03006","name":"枣","category":"核果类","avgPrice":11.5,"markets":1,"provinceCount":1},
+{"code":"AF03006001","name":"冬枣","category":"核果类","avgPrice":7.95,"markets":5,"provinceCount":5},
+{"code":"AF03006002","name":"红枣","category":"核果类","avgPrice":3.08,"markets":3,"provinceCount":3},
+{"code":"AF03006003","name":"金丝枣","category":"核果类","avgPrice":4.55,"markets":1,"provinceCount":1},
+{"code":"AF03006004","name":"菱枣","category":"核果类","avgPrice":0,"markets":0,"provinceCount":0},
+{"code":"AF03006005","name":"大枣","category":"核果类","avgPrice":10.42,"markets":3,"provinceCount":3},
+{"code":"AF03006006","name":"青枣","category":"核果类","avgPrice":4.42,"markets":3,"provinceCount":3},
+{"code":"AF03007","name":"橄榄","category":"核果类","avgPrice":0,"markets":0,"provinceCount":0},
+{"code":"AF04001","name":"核桃","category":"坚果类","avgPrice":9.33,"markets":4,"provinceCount":4},
+{"code":"AF04001001","name":"核桃(新温179)","category":"坚果类","avgPrice":0,"markets":0,"provinceCount":0},
+{"code":"AF04001002","name":"核桃(新温185)","category":"坚果类","avgPrice":15.0,"markets":1,"provinceCount":1},
+{"code":"AF04001003","name":"核桃(新早丰)","category":"坚果类","avgPrice":0,"markets":0,"provinceCount":0},
+{"code":"AF04001004","name":"核桃(杂343)","category":"坚果类","avgPrice":0,"markets":0,"provinceCount":0},
+{"code":"AF04001005","name":"核桃果(半径26-30mm)","category":"坚果类","avgPrice":0,"markets":0,"provinceCount":0},
+{"code":"AF04001006","name":"核桃果(半径30mm以上)","category":"坚果类","avgPrice":0,"markets":0,"provinceCount":0},
+{"code":"AF04001007","name":"核桃仁(白头路，孔径16mm以上)","category":"坚果类","avgPrice":0,"markets":0,"provinceCount":0},
+{"code":"AF04001008","name":"核桃仁(白二路，孔径在12-16mm)","category":"坚果类","avgPrice":0,"markets":0,"provinceCount":0},
+{"code":"AF04001009","name":"核桃仁(白三路，孔径在8-12mm)","category":"坚果类","avgPrice":0,"markets":0,"provinceCount":0},
+{"code":"AF04002","name":"板栗","category":"坚果类","avgPrice":3.67,"markets":2,"provinceCount":2},
+{"code":"AF04003","name":"榛子","category":"坚果类","avgPrice":32.5,"markets":1,"provinceCount":1},
+{"code":"AF04004","name":"松子","category":"坚果类","avgPrice":50.0,"markets":1,"provinceCount":1},
+{"code":"AF04005","name":"白果","category":"坚果类","avgPrice":0,"markets":0,"provinceCount":0},
+{"code":"AF04006","name":"开心果","category":"坚果类","avgPrice":42.5,"markets":2,"provinceCount":2},
+{"code":"AF04007","name":"杏仁","category":"坚果类","avgPrice":27.0,"markets":2,"provinceCount":2},
+{"code":"AF04008","name":"腰果","category":"坚果类","avgPrice":32.5,"markets":2,"provinceCount":2},
+{"code":"AF04009","name":"巴西果","category":"坚果类","avgPrice":0,"markets":0,"provinceCount":0},
+{"code":"AF04010","name":"巴旦杏","category":"坚果类","avgPrice":22.5,"markets":1,"provinceCount":1},
+{"code":"AF04011","name":"夏威夷果","category":"坚果类","avgPrice":27.5,"markets":1,"provinceCount":1},
+{"code":"AF04012","name":"槟榔","category":"坚果类","avgPrice":0,"markets":0,"provinceCount":0},
+{"code":"AF04013","name":"香榧","category":"坚果类","avgPrice":0,"markets":0,"provinceCount":0},
+{"code":"AF05001","name":"橘、柑","category":"柑果类","avgPrice":2.99,"markets":8,"provinceCount":8},
+{"code":"AF05001001","name":"蜜桔","category":"柑果类","avgPrice":3.34,"markets":5,"provinceCount":5},
+{"code":"AF05001002","name":"年桔","category":"柑果类","avgPrice":1.45,"markets":1,"provinceCount":1},
+{"code":"AF05001003","name":"芦柑","category":"柑果类","avgPrice":2.52,"markets":3,"provinceCount":3},
+{"code":"AF05001004","name":"砂糖橘","category":"柑果类","avgPrice":2.99,"markets":6,"provinceCount":6},
+{"code":"AF05001005","name":"蕉柑","category":"柑果类","avgPrice":0,"markets":0,"provinceCount":0},
+{"code":"AF05001006","name":"椪柑","category":"柑果类","avgPrice":1.5,"markets":1,"provinceCount":1},
+{"code":"AF05001007","name":"橙子","category":"柑果类","avgPrice":3.0,"markets":6,"provinceCount":6},
+{"code":"AF05001008","name":"广柑","category":"柑果类","avgPrice":0,"markets":0,"provinceCount":0},
+{"code":"AF05001009","name":"脐橙","category":"柑果类","avgPrice":2.79,"markets":5,"provinceCount":5},
+{"code":"AF05001010","name":"沃柑","category":"柑果类","avgPrice":2.67,"markets":3,"provinceCount":3},
+{"code":"AF05002","name":"甜橙","category":"柑果类","avgPrice":3.17,"markets":6,"provinceCount":6},
+{"code":"AF05003","name":"柚子","category":"柑果类","avgPrice":3.8,"markets":5,"provinceCount":5},
+{"code":"AF05003001","name":"常山胡柚","category":"柑果类","avgPrice":2.5,"markets":1,"provinceCount":1},
+{"code":"AF05003002","name":"沙田柚","category":"柑果类","avgPrice":2.4,"markets":1,"provinceCount":1},
+{"code":"AF05003003","name":"四季柚","category":"柑果类","avgPrice":3.62,"markets":1,"provinceCount":1},
+{"code":"AF05004","name":"葡萄柚","category":"柑果类","avgPrice":2.5,"markets":1,"provinceCount":1},
+{"code":"AF05005","name":"柠檬","category":"柑果类","avgPrice":5.87,"markets":7,"provinceCount":7},
+{"code":"AF06001","name":"香蕉","category":"热带及亚热带水果","avgPrice":2.76,"markets":8,"provinceCount":8},
+{"code":"AF06002","name":"菠萝","category":"热带及亚热带水果","avgPrice":3.84,"markets":7,"provinceCount":7},
+{"code":"AF06003","name":"荔枝","category":"热带及亚热带水果","avgPrice":9.39,"markets":8,"provinceCount":8},
+{"code":"AF06003001","name":"荔枝(桂味)","category":"热带及亚热带水果","avgPrice":0,"markets":0,"provinceCount":0},
+{"code":"AF06003002","name":"荔枝(妃子笑)","category":"热带及亚热带水果","avgPrice":5.5,"markets":1,"provinceCount":1},
+{"code":"AF06003003","name":"荔枝(黑叶)","category":"热带及亚热带水果","avgPrice":0,"markets":0,"provinceCount":0},
+{"code":"AF06003004","name":"荔枝(三月红)","category":"热带及亚热带水果","avgPrice":0,"markets":0,"provinceCount":0},
+{"code":"AF06003005","name":"荔枝(白腊)","category":"热带及亚热带水果","avgPrice":0,"markets":0,"provinceCount":0},
+{"code":"AF06003006","name":"荔枝(怀枝)","category":"热带及亚热带水果","avgPrice":0,"markets":0,"provinceCount":0},
+{"code":"AF06004","name":"龙眼(桂圆)","category":"热带及亚热带水果","avgPrice":7.17,"markets":5,"provinceCount":5},
+{"code":"AF06004001","name":"龙眼(石硖)","category":"热带及亚热带水果","avgPrice":0,"markets":0,"provinceCount":0},
+{"code":"AF06004002","name":"龙眼(储良)","category":"热带及亚热带水果","avgPrice":0,"markets":0,"provinceCount":0},
+{"code":"AF06004003","name":"龙眼(乌圆)","category":"热带及亚热带水果","avgPrice":7.55,"markets":1,"provinceCount":1},
+{"code":"AF06005","name":"芒果","category":"热带及亚热带水果","avgPrice":4.55,"markets":8,"provinceCount":8},
+{"code":"AF06005001","name":"金龙芒","category":"热带及亚热带水果","avgPrice":0,"markets":0,"provinceCount":0},
+{"code":"AF06005002","name":"象牙芒","category":"热带及亚热带水果","avgPrice":4.25,"markets":1,"provinceCount":1},
+{"code":"AF06005003","name":"芒果(金煌芒)","category":"热带及亚热带水果","avgPrice":5.32,"markets":2,"provinceCount":2},
+{"code":"AF06005004","name":"田阳香芒","category":"热带及亚热带水果","avgPrice":6.12,"markets":1,"provinceCount":1},
+{"code":"AF06005005","name":"芒果(红象牙9号)","category":"热带及亚热带水果","avgPrice":0.95,"markets":1,"provinceCount":1},
+{"code":"AF06005006","name":"芒果(象牙22号)","category":"热带及亚热带水果","avgPrice":0,"markets":0,"provinceCount":0},
+{"code":"AF06005007","name":"芒果(农院3号)","category":"热带及亚热带水果","avgPrice":0,"markets":0,"provinceCount":0},
+{"code":"AF06005008","name":"芒果(农院5号)","category":"热带及亚热带水果","avgPrice":0,"markets":0,"provinceCount":0},
+{"code":"AF06005009","name":"芒果(桂叶)","category":"热带及亚热带水果","avgPrice":0,"markets":0,"provinceCount":0},
+{"code":"AF06005010","name":"芒果(金穗)","category":"热带及亚热带水果","avgPrice":0,"markets":0,"provinceCount":0},
+{"code":"AF06005011","name":"芒果(土芒)","category":"热带及亚热带水果","avgPrice":0,"markets":0,"provinceCount":0},
+{"code":"AF06005012","name":"芒果(台农一号)","category":"热带及亚热带水果","avgPrice":5.65,"markets":2,"provinceCount":2},
+{"code":"AF06005013","name":"芒果(红贵妃）","category":"热带及亚热带水果","avgPrice":1.8,"markets":1,"provinceCount":1},
+{"code":"AF06005014","name":"芒果(台芽)","category":"热带及亚热带水果","avgPrice":0,"markets":0,"provinceCount":0},
+{"code":"AF06005015","name":"桂七","category":"热带及亚热带水果","avgPrice":2.1,"markets":1,"provinceCount":1},
+{"code":"AF06005016","name":"美国红芒","category":"热带及亚热带水果","avgPrice":0,"markets":0,"provinceCount":0},
+{"code":"AF06006","name":"木瓜","category":"热带及亚热带水果","avgPrice":4.16,"markets":8,"provinceCount":8},
+{"code":"AF06007","name":"火龙果","category":"热带及亚热带水果","avgPrice":4.42,"markets":8,"provinceCount":8},
+{"code":"AF06008","name":"番石榴","category":"热带及亚热带水果","avgPrice":1.15,"markets":1,"provinceCount":1},
+{"code":"AF06009","name":"红毛丹","category":"热带及亚热带水果","avgPrice":18.62,"markets":4,"provinceCount":4},
+{"code":"AF06010","name":"榴莲","category":"热带及亚热带水果","avgPrice":16.54,"markets":7,"provinceCount":7},
+{"code":"AF06011","name":"莲雾","category":"热带及亚热带水果","avgPrice":0,"markets":0,"provinceCount":0},
+{"code":"AF06012","name":"枇杷","category":"热带及亚热带水果","avgPrice":12.67,"markets":3,"provinceCount":3},
+{"code":"AF06013","name":"西番莲","category":"热带及亚热带水果","avgPrice":0,"markets":0,"provinceCount":0},
+{"code":"AF06014","name":"人参果","category":"热带及亚热带水果","avgPrice":5.36,"markets":5,"provinceCount":5},
+{"code":"AF06015","name":"山竹","category":"热带及亚热带水果","avgPrice":13.36,"markets":6,"provinceCount":6},
+{"code":"AF06016","name":"杨梅","category":"热带及亚热带水果","avgPrice":15.0,"markets":1,"provinceCount":1},
+{"code":"AF06017","name":"杨桃","category":"热带及亚热带水果","avgPrice":6.44,"markets":5,"provinceCount":5},
+{"code":"AF06018","name":"椰枣","category":"热带及亚热带水果","avgPrice":0,"markets":0,"provinceCount":0},
+{"code":"AF06019","name":"椰子","category":"热带及亚热带水果","avgPrice":6.8,"markets":3,"provinceCount":3},
+{"code":"AF06020","name":"菠萝蜜","category":"热带及亚热带水果","avgPrice":4.79,"markets":7,"provinceCount":7},
+{"code":"AF06021","name":"热农芒果","category":"热带及亚热带水果","avgPrice":1.25,"markets":1,"provinceCount":1},
+{"code":"AF07001","name":"西瓜","category":"瓜类水果","avgPrice":1.92,"markets":8,"provinceCount":8},
+{"code":"AF07001001","name":"早春红玉瓜","category":"瓜类水果","avgPrice":2.0,"markets":1,"provinceCount":1},
+{"code":"AF07001002","name":"特小凤西瓜","category":"瓜类水果","avgPrice":2.08,"markets":7,"provinceCount":7},
+{"code":"AF07001003","name":"黑美人西瓜","category":"瓜类水果","avgPrice":1.38,"markets":4,"provinceCount":4},
+{"code":"AF07001004","name":"麒麟西瓜","category":"瓜类水果","avgPrice":1.87,"markets":8,"provinceCount":8},
+{"code":"AF07001005","name":"京欣西瓜","category":"瓜类水果","avgPrice":1.02,"markets":2,"provinceCount":2},
+{"code":"AF07002","name":"甜瓜","category":"瓜类水果","avgPrice":1.92,"markets":7,"provinceCount":7},
+{"code":"AF07002001","name":"伊丽沙白瓜","category":"瓜类水果","avgPrice":2.75,"markets":1,"provinceCount":1},
+{"code":"AF07002002","name":"中华蜜宝","category":"瓜类水果","avgPrice":3.62,"markets":1,"provinceCount":1},
+{"code":"AF07002003","name":"华兰氏瓜","category":"瓜类水果","avgPrice":0,"markets":0,"provinceCount":0},
+{"code":"AF07002004","name":"红城十甜瓜","category":"瓜类水果","avgPrice":2.25,"markets":1,"provinceCount":1},
+{"code":"AF07002005","name":"网纹瓜","category":"瓜类水果","avgPrice":5.09,"markets":4,"provinceCount":4},
+{"code":"AF07002006","name":"香瓜","category":"瓜类水果","avgPrice":2.3,"markets":5,"provinceCount":5},
+{"code":"AF07002007","name":"黄金瓜","category":"瓜类水果","avgPrice":1.75,"markets":1,"provinceCount":1},
+{"code":"AF07002008","name":"黄河蜜","category":"瓜类水果","avgPrice":1.75,"markets":1,"provinceCount":1},
+{"code":"AF07002009","name":"白糖罐甜瓜","category":"瓜类水果","avgPrice":0,"markets":0,"provinceCount":0},
+{"code":"AF07002010","name":"伽师瓜","category":"瓜类水果","avgPrice":3.5,"markets":1,"provinceCount":1},
+{"code":"AF07002011","name":"厚皮甜瓜","category":"瓜类水果","avgPrice":0,"markets":0,"provinceCount":0},
+{"code":"AF07003","name":"哈密瓜","category":"瓜类水果","avgPrice":2.69,"markets":8,"provinceCount":8},
+{"code":"AF99999","name":"其他果品","category":"其他果品","avgPrice":0,"markets":0,"provinceCount":0}
+];;
+
+
+var FRUIT_DATA = {
+    date: "2026-08-07",
+    source: "农业农村部 ncpscxx.moa.gov.cn",
+    totalItems: 182,
+    activeItems: 182,
+    avgPrice: 6.35,
+    upCount: 0,
+    downCount: 0,
+    flatCount: 182,
+    items: ALL_FRUIT_DATA.map(function(d){ return {name:d.name, category:d.category, price:d.avgPrice>0?d.avgPrice:null, yesterdayPrice:null, change:0, pctChange:0, season:'全年', supplyStatus:d.avgPrice>0?'in_season':'coming_soon'}; })
+};
+
 var curCat = 'veg';
 var curMkt = 'wx';
 var curData = VEG_DATA_WX;
@@ -275,20 +479,63 @@ function switchCat(cat) {
     curCat = cat;
     var tabs = document.querySelectorAll('.cat-tab');
     for (var i=0; i<tabs.length; i++) tabs[i].classList.remove('active');
-    var idx = {veg:0, pork:1, poultry:2, seafood:3}[cat];
+    var idx = {veg:0, pork:1, poultry:2, seafood:3, fruit:4}[cat];
     tabs[idx].classList.add('active');
     
     // show/hide market bar
     document.getElementById('marketBar').style.display = (cat === 'veg') ? '' : 'none';
     
     // update filter options
+    // 水果品类：使用按钮式品类筛选栏
+    if (cat === 'fruit') {
+        // 隐藏下拉框，显示按钮栏
+        document.getElementById('catFilter').style.display = 'none';
+        var bar = document.getElementById('fruitCatBar');
+        bar.style.display = 'flex';
+        var fcs = ['全部','仁果类','浆果类','核果类','坚果类','柑果类','热带及亚热带水果','瓜类水果','其他果品'];
+        bar.innerHTML = '';
+        for (var fi = 0; fi < fcs.length; fi++) {
+            var btn = document.createElement('button');
+            btn.className = 'fruit-cat-btn' + (fcs[fi] === fruitCurCat ? ' active-fruit' : '');
+            btn.textContent = fcs[fi];
+            btn.setAttribute('data-cat', fcs[fi]);
+            btn.onclick = function() {
+                fruitCurCat = this.getAttribute('data-cat');
+                // 更新所有按钮的active状态
+                var btns = document.querySelectorAll('.fruit-cat-btn');
+                for (var b = 0; b < btns.length; b++) {
+                    btns[b].classList.remove('active-fruit');
+                    if (btns[b].getAttribute('data-cat') === fruitCurCat) btns[b].classList.add('active-fruit');
+                }
+                renderFruitTable();
+            };
+            bar.appendChild(btn);
+        }
+        // 绑定搜索到水果渲染
+        document.getElementById('searchInput').oninput = renderFruitTable;
+        renderAll();
+        return;
+    }
+    
+    // 恢复正常筛选器
+    document.getElementById('catFilter').style.display = '';
+    document.getElementById('fruitCatBar').style.display = 'none';
+    document.getElementById('searchInput').oninput = renderTable;
+    document.getElementById('catFilter').onchange = renderTable;
+    
     var filter = document.getElementById('catFilter');
     var vegOpts = ['全部','叶菜','花果','茄果','瓜果','根茎','葱蒜','豆类','菌菇','其他'];
+    var fruitOpts = ['全部','仁果类','浆果类','核果类','坚果类','柑果类','热带及亚热带水果','瓜类水果','其他果品'];
     var otherOpts = ['全部'];
+    
+    // fruit uses its own category list
+    if (cat === 'fruit') {
+        opts = fruitOpts;
+    } else 
     
     var opts = (cat === 'veg') ? vegOpts : otherOpts;
     // add data-specific categories
-    var d = {veg: VEG_DATA_WX, pork: PORK_DATA, poultry: POULTRY_DATA, seafood: SEAFOOD_DATA}[cat];
+    var d = {veg: VEG_DATA_WX, pork: PORK_DATA, poultry: POULTRY_DATA, seafood: SEAFOOD_DATA, fruit: FRUIT_DATA}[cat];
     var seen = {};
     for (var i=0; i<d.items.length; i++) {
         var c = d.items[i].category;
@@ -307,8 +554,8 @@ function switchCat(cat) {
         curData = d;
     }
     
-    var names = {veg:'蔬菜', pork:'猪肉', poultry:'禽蛋', seafood:'水产'};
-    var emojis = {veg:'🥬', pork:'🥩', poultry:'🥚', seafood:'🐟'};
+    var names = {veg:'蔬菜', pork:'猪肉', poultry:'禽蛋', seafood:'水产', fruit:'水果'};
+    var emojis = {veg:'🥬', pork:'🥩', poultry:'🥚', seafood:'🐟', fruit:'🍊'};
     document.getElementById('pageTitle').textContent = emojis[cat] + ' 悦鲜森 · 全国' + names[cat] + '价格查询';
     
     renderAll();
@@ -326,6 +573,7 @@ function switchMkt(mkt) {
 
 // ============ RENDER ============
 function renderAll() {
+    if (curCat === 'fruit') { renderAllFruit(); return; }
     var d = curData;
     if (!d) { console.error('renderAll: curData is null'); return; }
     if (!d.items) { console.error('renderAll: no items in data'); return; }
@@ -340,6 +588,8 @@ function renderAll() {
 }
 
 function renderTable() {
+    // 水果品类：数据格式不同，单独处理
+    if (curCat === 'fruit') { renderFruitTable(); return; }
     var items = curData.items;
     var filter = document.getElementById('catFilter').value;
     var search = document.getElementById('searchInput').value.toLowerCase();
@@ -556,7 +806,7 @@ function getHistoryDataForCurrent() {
     // 根据当前市场/品类获取对应历史数据
     var key = curMkt;
     if (curCat !== 'veg') {
-        key = curCat; // pork, poultry, seafood
+        key = curCat; // pork, poultry, seafood, fruit
     }
     return HISTORY_DATA[key] || HISTORY_DATA[curCat] || [];
 }
@@ -825,6 +1075,170 @@ function drawChart() {
 }
 
 // 重写 renderAll 以同时更新图表
+
+
+// ============ 水果专用渲染 ============
+var fruitCurCat = '全部';
+var fruitFilteredData = [];
+
+function renderAllFruit() {
+    document.getElementById('dataDate').textContent = FRUIT_DATA.date || '--';
+    document.getElementById('dataSource').textContent = FRUIT_DATA.source || '--';
+
+    // 更新品类筛选器
+    var filter = document.getElementById('catFilter');
+    var fruitCats = ['全部','仁果类','浆果类','核果类','坚果类','柑果类','热带及亚热带水果','瓜类水果','其他果品'];
+    filter.innerHTML = '';
+    for (var i = 0; i < fruitCats.length; i++) {
+        var opt = document.createElement('option');
+        opt.value = fruitCats[i];
+        opt.textContent = fruitCats[i];
+        if (fruitCats[i] === fruitCurCat) opt.selected = true;
+        filter.appendChild(opt);
+    }
+
+    // 更新搜索框行为
+    var search = document.getElementById('searchInput');
+    var oldHandler = search.oninput;
+    if (oldHandler && oldHandler.toString().indexOf('renderFruitTable') < 0) {
+        search._oldOnInput = oldHandler;
+    }
+    search.oninput = renderFruitTable;
+
+    renderFruitTable();
+}
+
+function renderFruitTable() {
+    var filter = fruitCurCat;
+    var search = document.getElementById('searchInput').value.toLowerCase();
+
+    var items = [];
+    // 从 ALL_FRUIT_DATA 过滤
+    for (var i = 0; i < ALL_FRUIT_DATA.length; i++) {
+        var d = ALL_FRUIT_DATA[i];
+        if (filter !== '全部' && d.category !== filter) continue;
+        if (search && d.name.toLowerCase().indexOf(search) < 0) continue;
+        items.push(d);
+    }
+
+    fruitFilteredData = items;
+    fruitCurCat = filter;
+
+    // 统计
+    var withData = 0, totalPrice = 0;
+    for (var i = 0; i < items.length; i++) {
+        if (items[i].markets > 0) { withData++; totalPrice += items[i].avgPrice; }
+    }
+    document.getElementById('activeCount').textContent = withData;
+    document.getElementById('avgPrice').textContent = withData > 0 ? (totalPrice / withData).toFixed(2) : '-';
+    document.getElementById('upCount').textContent = '--';
+    document.getElementById('downCount').textContent = '--';
+    document.getElementById('flatCount').textContent = '--';
+
+    // 按品类分组，品类内按父品种分组
+    var h = '';
+    // 先按品类排序
+    var catOrder = ['仁果类','浆果类','核果类','坚果类','柑果类','热带及亚热带水果','瓜类水果','其他果品'];
+    items.sort(function(a,b) {
+        var ci = catOrder.indexOf(a.category), cj = catOrder.indexOf(b.category);
+        if (ci < 0) ci = 99; if (cj < 0) cj = 99;
+        if (ci !== cj) return ci - cj;
+        // 同品类内按code排序（父品种在前，子品种在后）
+        return a.code.localeCompare(b.code);
+    });
+
+    var lastCat = '';
+    var parentNames = {}; // 记录已出现的父品种名称
+    for (var i = 0; i < items.length; i++) {
+        var d = items[i];
+        var isParent = d.code.length === 5; // 5位code是父品种（如AF01001苹果），8位是子品种
+        var parentCode = d.code.substring(0, 5); // 取前5位找父品种
+
+        // 品类分隔
+        if (d.category !== lastCat) {
+            // 计算该品类数量
+            var catCnt = 0;
+            for (var j = i; j < items.length; j++) { if (items[j].category === d.category) catCnt++; }
+            var catEmoji = {'仁果类':'🍎','浆果类':'🍇','核果类':'🍑','坚果类':'🥜','柑果类':'🍊','热带及亚热带水果':'🍌','瓜类水果':'🍉','其他果品':'🥝'}[d.category] || '🍏';
+            h += '<tr class="fruit-cat-sep"><td colspan="6" style="background:#fff8f0;font-weight:bold;color:#e67e22;padding:10px 12px;font-size:14px;border-bottom:2px solid #f0d6b0">' + catEmoji + ' ' + d.category + ' <span style="font-weight:normal;font-size:12px;color:#888">（' + catCnt + '种）</span></td></tr>';
+            lastCat = d.category;
+        }
+
+        var priceStr = d.avgPrice > 0 ? d.avgPrice.toFixed(2) : '--';
+        var indentClass = isParent ? 'fruit-parent' : 'fruit-child';
+        var indentStyle = isParent ? 'font-weight:bold;font-size:13px' : 'padding-left:28px;font-size:12px;color:#555';
+        var nameHtml = isParent ? '▸ ' + d.name : '· ' + d.name;
+
+        h += '<tr class="' + indentClass + '">';
+        h += '<td style="' + indentStyle + '">' + nameHtml + '</td>';
+        h += '<td style="' + (isParent ? 'font-size:13px' : 'font-size:12px;color:#888') + '">' + d.category + '</td>';
+        h += '<td style="text-align:right;' + (isParent ? 'font-weight:bold' : '') + '">' + priceStr + '</td>';
+        h += '<td>--</td>';
+        h += '<td><span class="flat">→</span></td>';
+        h += '<td>' + (d.markets > 0 ? '<span class="stag s-全年">在售</span>' : '<span class="stag s-冬">暂无</span>') + '</td>';
+        h += '</tr>';
+    }
+    if (items.length === 0) h = '<tr><td colspan="6" style="text-align:center;color:#999;padding:30px">无匹配数据</td></tr>';
+    document.getElementById('priceBody').innerHTML = h;
+
+    // 渲染侧边栏
+    renderFruitSidebar(items);
+}
+
+function renderFruitSidebar(items) {
+    var sorted = items.slice().sort(function(a,b) { return b.avgPrice - a.avgPrice; });
+    var withData = [];
+    for (var i = 0; i < sorted.length; i++) { if (sorted[i].avgPrice > 0) withData.push(sorted[i]); }
+
+    var topHigh = withData.slice(0, 5);
+    var highHtml = '';
+    for (var i = 0; i < topHigh.length; i++) {
+        highHtml += '<div class="tm-item"><span>' + (i+1) + '. ' + topHigh[i].name + '</span><span class="up">¥' + topHigh[i].avgPrice.toFixed(2) + '</span></div>';
+    }
+    document.getElementById('topRise').innerHTML = highHtml || '--';
+
+    var topLow = withData.slice(-5).reverse();
+    var lowHtml = '';
+    for (var i = 0; i < topLow.length; i++) {
+        lowHtml += '<div class="tm-item"><span>' + (i+1) + '. ' + topLow[i].name + '</span><span class="down">¥' + topLow[i].avgPrice.toFixed(2) + '</span></div>';
+    }
+    document.getElementById('topFall').innerHTML = lowHtml || '--';
+
+    var catMap = {};
+    for (var i = 0; i < items.length; i++) {
+        var c = items[i].category;
+        if (!catMap[c]) catMap[c] = {cnt:0, sum:0};
+        catMap[c].cnt++;
+        if (items[i].avgPrice > 0) catMap[c].sum += items[i].avgPrice;
+    }
+    var cats = Object.keys(catMap);
+    var catHtml = '';
+    for (var i = 0; i < cats.length; i++) {
+        var k = cats[i];
+        var m = catMap[k];
+        var avg = m.cnt > 0 ? (m.sum / m.cnt).toFixed(2) : '-';
+        catHtml += '<div class="tm-item"><span>' + k + '</span><span>¥' + avg + '</span></div>';
+    }
+    document.getElementById('catAvg').innerHTML = catHtml || '--';
+}
+
+// 水果品类不显示走势图（数据来源不同）
+var _origPopulateChartItems = populateChartItems;
+populateChartItems = function() {
+    if (curCat === 'fruit') {
+        var sel = document.getElementById('chartItem');
+        if (sel) sel.innerHTML = '<option value="">-- 水果暂无走势图 --</option>';
+        return;
+    }
+    _origPopulateChartItems();
+};
+
+var _origDrawChart = drawChart;
+drawChart = function() {
+    if (curCat === 'fruit') return;
+    _origDrawChart();
+};
+
 var _originalRenderAll = renderAll;
 renderAll = function() {
     _originalRenderAll();
