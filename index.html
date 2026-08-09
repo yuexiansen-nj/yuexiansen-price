@@ -136,7 +136,7 @@ footer{text-align:center;padding:12px;font-size:10px;color:#aaa}
 <div class="main">
   <div class="table-wrap">
     <table><thead><tr>
-      <th>品种</th><th>品类</th><th>今日价(元/斤)</th><th>昨日价</th><th>涨跌</th><th>状态</th>
+      <th>品种</th><th>品类</th><th>今日价(元/斤)</th><th>状态</th>
     </tr></thead>
     <tbody id="priceBody"></tbody></table>
   </div>
@@ -887,7 +887,7 @@ function renderFruitTable() {
             var catCnt = 0;
             for (var j = i; j < items.length; j++) { if (items[j].category === d.category) catCnt++; }
             var catEmoji = {'仁果类':'🍎','浆果类':'🍇','核果类':'🍑','坚果类':'🥜','柑果类':'🍊','热带及亚热带水果':'🍌','瓜类水果':'🍉','其他果品':'🥝'}[d.category] || '🍏';
-            h += '<tr class="fruit-cat-sep"><td colspan="6" style="background:#fff8f0;font-weight:bold;color:#e67e22;padding:10px 12px;font-size:14px;border-bottom:2px solid #f0d6b0">' + catEmoji + ' ' + d.category + ' <span style="font-weight:normal;font-size:12px;color:#888">（' + catCnt + '种）</span></td></tr>';
+            h += '<tr class="fruit-cat-sep"><td colspan="4" style="background:#fff8f0;font-weight:bold;color:#e67e22;padding:10px 12px;font-size:14px;border-bottom:2px solid #f0d6b0">' + catEmoji + ' ' + d.category + ' <span style="font-weight:normal;font-size:12px;color:#888">（' + catCnt + '种）</span></td></tr>';
             lastCat = d.category;
         }
 
@@ -900,8 +900,6 @@ function renderFruitTable() {
         h += '<td style="' + indentStyle + '">' + nameHtml + '</td>';
         h += '<td style="' + (isParent ? 'font-size:13px' : 'font-size:12px;color:#888') + '">' + d.category + '</td>';
         h += '<td style="text-align:right;' + (isParent ? 'font-weight:bold' : '') + '">' + priceStr + '</td>';
-        h += '<td>--</td>';
-        h += '<td><span class="flat">→</span></td>';
         h += '<td>' + (d.markets > 0 ? '<span class="stag s-全年">在售</span>' : '<span class="stag s-冬">暂无</span>') + '</td>';
         h += '</tr>';
     }
